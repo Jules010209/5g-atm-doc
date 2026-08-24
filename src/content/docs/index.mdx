@@ -1,40 +1,36 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
-template: splash # Remove or comment out this line to display the site sidebar on this page.
+title: g-atm
+description: User guide for g-atm, the 4-Flight style air traffic control client for the IVAO network.
+template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
-  image:
-    file: ../../assets/houston.webp
+  tagline: An en-route control position for IVAO, built to look and behave like 4-Flight.
   actions:
-    - text: Example Guide
-      link: guides/example
+    - text: Start here
+      link: /5g-atm-doc/start/overview/
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
-      icon: external
+    - text: Your first session
+      link: /5g-atm-doc/start/first-session/
+      icon: rocket
       variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Next steps
-
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
+	<Card title="Set it up once" icon="setting">
+		Two files hold everything: your IVAO account in `config.json`, your sectors and
+		positions in `op_config.json`. [Account settings](/5g-atm-doc/start/configuration/)
 	</Card>
-	<Card title="Change page layout" icon="document">
-		Delete `template: splash` in `src/content/docs/index.mdx` to display a
-		sidebar on this page.
+	<Card title="Read the picture" icon="magnifier">
+		Track symbols, speed vectors, history dots and the three label formats, field by
+		field. [Track and label anatomy](/5g-atm-doc/labels/anatomy/)
 	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
+	<Card title="Control" icon="rocket">
+		Assume a flight, issue a level, a speed, a direct, then transfer it to the next
+		sector. [Assume, release, transfer](/5g-atm-doc/control/assume-transfer/)
 	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
-	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
+	<Card title="Datalink" icon="comment">
+		Send clearances over CPDLC and answer pilot requests without touching the
+		frequency. [CPDLC overview](/5g-atm-doc/cpdlc/overview/)
 	</Card>
 </CardGrid>
