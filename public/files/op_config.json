@@ -1,0 +1,208 @@
+{
+  "roles": [
+    "AGDP",
+    "AMAN",
+    "BTIV",
+    "C4FEU",
+    "FDO",
+    "GOST",
+    "INSTAC",
+    "INT4F",
+    "OPSUP",
+    "PLANNER",
+    "PSA_OCCD",
+    "PURPLES",
+    "STRIDA",
+    "SURV",
+    "TACTICAL"
+  ],
+  "config": [
+    {
+      "alias": "LFMM",
+      "sectorfile": "CRNA SE - Marseille.isc",
+      "resps": [
+        {
+          "sector": "RAW",
+          "callsign": "LFMM_W_CTR",
+          "frequency": "132.365",
+          "cpdlc": {
+            "logon": "LFM2",
+            "fallback_logons": ["LFM1", "LFMM"]
+          },
+          "subsectors": [
+            "LFMM_FIR_W",
+            "LFMM_UIR_W",
+            "LFMM_UIR_W_SECTEUR_A",
+            "LIMITES_VERT_FIR_W",
+            "LIMITES_VERT_SECTEUR_A",
+            "LIMITES_VERT_UIR_W",
+            "LFMM_RELEASE_BOX"
+          ]
+        },
+        {
+          "sector": "RAE",
+          "callsign": "LFMM_E_CTR",
+          "frequency": "127.905",
+          "cpdlc": {
+            "logon": "LFM1",
+            "fallback_logons": ["LFM2", "LFMM"]
+          },
+          "subsectors": [
+            "LFMM_FIR_E",
+            "LFMM_UIR_E",
+            "LIMITES_VERT_FIR_E",
+            "LIMITES_VERT_UIR_E"
+          ]
+        },
+        {
+          "sector": "MM",
+          "callsign": "LFMM_CTR",
+          "frequency": "128.850",
+          "cpdlc": {
+            "logon": "LFMM",
+            "fallback_logons": ["LFM1", "LFM2"]
+          },
+          "subsectors": ["RAW", "RAE"]
+        }
+      ]
+    },
+    {
+      "alias": "LFFF",
+      "sectorfile": "CRNA N - Paris.isc",
+      "resps": [
+        {
+          "sector": "RPAW",
+          "callsign": "LFFF_W_CTR",
+          "frequency": "124.850",
+          "cpdlc": {
+            "logon": "LFF1",
+            "fallback_logons": ["LFF2", "LFFF"]
+          },
+          "subsectors": [
+            "LFFF_FIR_W",
+            "LFFF_UIR_W",
+            "LIMITES_VERT_FIR_W",
+            "LIMITES_VERT_UIR_W",
+            "LFFF_RELEASE_BOX"
+          ]
+        },
+        {
+          "sector": "RPAE",
+          "callsign": "LFFF_E_CTR",
+          "frequency": "132.100",
+          "cpdlc": {
+            "logon": "LFF2",
+            "fallback_logons": ["LFF1", "LFFF"]
+          },
+          "subsectors": [
+            "LFFF_FIR_E",
+            "LFFF_UIR_E",
+            "LIMITES_VERT_FIR_E",
+            "LIMITES_VERT_UIR_E"
+          ]
+        },
+        {
+          "sector": "FF",
+          "callsign": "LFFF_CTR",
+          "frequency": "120.955",
+          "cpdlc": {
+            "logon": "LFFF",
+            "fallback_logons": ["LFF1", "LFF2"]
+          },
+          "subsectors": ["RPAW", "RPAE"]
+        }
+      ]
+    },
+    {
+      "alias": "LFEE",
+      "sectorfile": "CRNA E - Reims.isc",
+      "resps": [
+        {
+          "sector": "RMS",
+          "callsign": "LFEE_CTR",
+          "frequency": "135.505",
+          "cpdlc": {
+            "logon": "LFEE",
+            "fallback_logons": []
+          },
+          "subsectors": [
+            "LFEE_FIR",
+            "LFEE_UIR",
+            "LIMITES_VERT_FIR",
+            "LIMITES_VERT_UIR",
+            "LFEE_RELEASE_BOX"
+          ]
+        }
+      ]
+    },
+    {
+      "alias": "LFRR",
+      "sectorfile": "CRNA O - Brest.isc",
+      "resps": [
+        {
+          "sector": "BREST",
+          "callsign": "LFRR_CTR",
+          "frequency": "132.830",
+          "cpdlc": {
+            "logon": "LFRR",
+            "fallback_logons": []
+          },
+          "subsectors": [
+            "LFRR_FIR",
+            "LFRR_UIR",
+            "LIMITES_VERT_FIR",
+            "LIMITES_VERT_UIR",
+            "LFRR/EGGX_BOTA"
+          ]
+        }
+      ]
+    },
+    {
+      "alias": "LFBB",
+      "sectorfile": "CRNA SO - Bordeaux.isc",
+      "resps": [
+        {
+          "sector": "UNOR",
+          "callsign": "LFBB_N_CTR",
+          "frequency": "134.255",
+          "cpdlc": {
+            "logon": "LFB1",
+            "fallback_logons": ["LFB2", "LFBB"]
+          },
+          "subsectors": [
+            "LFBB_FIR_N",
+            "LFBB_UIR_N",
+            "LIMITES_VERT_FIR_N",
+            "LIMITES_VERT_UIR_N",
+            "LFBB_RELEASE_BOX"
+          ]
+        },
+        {
+          "sector": "USUD",
+          "callsign": "LFBB_S_CTR",
+          "frequency": "126.130",
+          "cpdlc": {
+            "logon": "LFB2",
+            "fallback_logons": ["LFB1", "LFBB"]
+          },
+          "subsectors": [
+            "LFBB_FIR_S",
+            "LFBB_UIR_S",
+            "LIMITES_VERT_FIR_S",
+            "LIMITES_VERT_UIR_S"
+          ]
+        },
+        {
+          "sector": "BDX",
+          "callsign": "LFBB_CTR",
+          "frequency": "130.230",
+          "cpdlc": {
+            "logon": "LFBB",
+            "fallback_logons": ["LFB1", "LFB2"]
+          },
+          "subsectors": ["UNOR", "USUD"]
+        }
+      ]
+    }
+  ]
+}

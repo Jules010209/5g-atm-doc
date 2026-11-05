@@ -14,23 +14,49 @@ hero:
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { Image } from 'astro:assets';
+import screen from '../../assets/screenshots/ch14-tools-sequencing.app.png';
+
+<Image src={screen} alt="The g-atm screen: the Global Menu across the top, the Filter Area on the right, sector maps, labelled tracks, the Tools menu open on Flight Lists and a Manual Sequencing menu" />
+
+The guide follows the order of the 4-Flight training booklet (*4F pour les nuls*, 3.0
+edition): first the position, then what the picture shows, then the tools in the order a
+controller meets them. If you know a chapter of the booklet, the chapter of the same
+number here shows how g-atm does it. Every picture is a capture of the application.
 
 <CardGrid stagger>
-	<Card title="Set it up once" icon="setting">
-		Two files hold everything: your IVAO account in `config.json`, your sectors and
-		positions in `op_config.json`. [Account settings](/5g-atm-doc/start/configuration/)
+	<Card title="Set up the position" icon="setting">
+		The screen, the Global Menu, filters, the Radar and Track Menus, secondary images,
+		System Maps. [Chapter 1](/5g-atm-doc/position/layout/)
 	</Card>
 	<Card title="Read the picture" icon="magnifier">
-		Track symbols, speed vectors, history dots and the three label formats, field by
-		field. [Track and label anatomy](/5g-atm-doc/labels/anatomy/)
+		Flight states and colours, the three label formats, every field, the Flight Leg and
+		the DyP Info. [Chapters 2 and 3](/5g-atm-doc/flights/states/)
 	</Card>
 	<Card title="Control" icon="rocket">
-		Assume a flight, issue a level, a speed, a direct, then transfer it to the next
-		sector. [Assume, release, transfer](/5g-atm-doc/control/assume-transfer/)
+		Mark a flight, clear a level, a direct, a heading, a speed, then assume and
+		transfer. [Chapters 4, 5 and 10](/5g-atm-doc/clearances/levels/)
 	</Card>
 	<Card title="Datalink" icon="comment">
-		Send clearances over CPDLC and answer pilot requests without touching the
-		frequency. [CPDLC overview](/5g-atm-doc/cpdlc/overview/)
+		Send clearances over CPDLC and answer pilot requests without using the frequency.
+		[Chapter 6](/5g-atm-doc/cpdlc/overview/)
 	</Card>
+	<Card title="Manage conflicts" icon="warning">
+		Contextual filters, group, SEP, QDM, CPA, extrapolation, Range Rings, Agenda, and
+		the safety nets. [Chapters 7 and 12](/5g-atm-doc/conflicts/contextual-filters/)
+	</Card>
+	<Card title="Coordinate and sequence" icon="list-format">
+		Exit levels and route changes, POINT and NEGO, arrivals, holds, STAMAN, departures,
+		sector regrouping. [Chapters 8 to 14](/5g-atm-doc/profile/levels/)
+	</Card>
+</CardGrid>
+
+## Also in this guide
+
+<CardGrid>
+	<LinkCard title="Account settings" href="/5g-atm-doc/start/configuration/" description="IVAO account, datalink code, voice, sector files." />
+	<LinkCard title="Mouse and keyboard" href="/5g-atm-doc/reference/mouse-keyboard/" description="Every gesture and every 4-Flight key, with its PC key." />
+	<LinkCard title="Joining a simulation" href="/5g-atm-doc/simulation/joining/" description="Train on a g-atm world server with the normal application." />
+	<LinkCard title="What g-atm does not do" href="/5g-atm-doc/reference/not-implemented/" description="Parts of 4-Flight left out, and why." />
 </CardGrid>

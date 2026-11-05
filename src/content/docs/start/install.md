@@ -1,67 +1,110 @@
 ---
-title: Install and first launch
-description: Requirements, installation, and what happens the first time you start g-atm.
+title: Install and update
+description: What you need, which installer to take, what happens at first launch, and how g-atm updates itself.
 ---
 
-## Requirements
+g-atm installs like any desktop application. Once installed, it keeps itself up to
+date: you install it once.
+
+## What you need
 
 | | |
 |---|---|
-| Operating system | Windows 10 or Windows 11 |
-| IVAO account | An active VID with an ATC rating allowing the position you intend to open |
-| Network | Outbound access to the IVAO world servers and TeamSpeak servers |
-| Audio | A headset with a microphone, for voice |
-| Optional | A Hoppie logon code, if you want CPDLC |
+| Computer | Windows 10 or 11, macOS, or Linux, 64-bit |
+| IVAO account | A VID with an ATC rating for the position you open, and a VID on g-atm's access list |
+| Network | Access to the IVAO servers, the IVAO TeamSpeak servers and the update server |
+| Audio | A headset with a microphone |
+| Optional | A Hoppie logon code, for [CPDLC](/5g-atm-doc/cpdlc/setup/) |
+| Optional | An IVAO API key, for active special areas and sector file downloads |
 
 ## Install
 
-1. Download the installer for the latest release.
-2. Run it and follow the prompts.
-3. Start **g-atm** from the Start menu.
+Each release of g-atm carries one installer per platform:
 
-The application does not need administrator rights to run, and it does not install a
-driver or a background service.
+| Platform | File to take (version 2.0.0 shown) |
+|---|---|
+| Windows | `g-atm_2.0.0_x64-setup.exe`, or the `g-atm_2.0.0_x64_en-US.msi` package |
+| macOS, Apple Silicon | `g-atm_2.0.0_aarch64.dmg` |
+| macOS, Intel | `g-atm_2.0.0_x64.dmg` |
+| Linux | `g-atm_2.0.0_amd64.AppImage`, `g-atm_2.0.0_amd64.deb` or `g-atm-2.0.0-1.x86_64.rpm` |
+
+The `.sig`, `.app.tar.gz` and `latest.json` files beside them are for the automatic
+update: you do not need them.
+
+Run the installer, then start **g-atm**. On Windows, g-atm uses the Microsoft Edge
+WebView2 runtime that Windows 10 and 11 already have. It installs no driver and no
+background service.
+
+:::note
+g-atm is developed and tested on Windows. The macOS and Linux builds come from the same
+release, but they are less tried. On macOS and Linux the push-to-talk key works only while
+a g-atm window has the keyboard focus (see [TeamSpeak](/5g-atm-doc/voice/teamspeak/)).
+:::
 
 ## First launch
 
-The first time it starts, g-atm creates its data folder and writes an empty configuration
-template into it:
+The first time it starts, g-atm creates its data folder and an empty `config.json` in
+it (on Windows, `%APPDATA%\com.jules.g-atm\`; other systems in [Files and
+folders](/5g-atm-doc/reference/files/)).
 
-```
-%APPDATA%\com.jules.g-atm\
-```
+The picture is empty at first: g-atm ships no maps. Before your first session:
 
-Paste that path into the Windows Explorer address bar to open the folder. You will find:
+1. **Install a sector file**: Tools → External Applications → Sector File →
+   **Install…**, or **Download** by IVAO sector ID. See [Account
+   settings](/5g-atm-doc/start/configuration/#sector-files).
+2. **Fill in your account**: the IVAO Connection window, and `config.json` for what
+   must be kept. See [Account settings](/5g-atm-doc/start/configuration/).
+3. **Install the base configuration files** below, so that OP CONF CHG PREP lists your
+   positions and the hold menu offers the predefined stacks.
 
-| File | What it holds |
-|---|---|
-| `config.json` | Your IVAO account, your announced position, voice settings, CPDLC settings |
-| `op_config.json` | Your sector groupings, position callsigns, frequencies and datalink codes |
-| `standard_config.json` | Screen state saved automatically: which windows are open and where |
+Then run through [Your first session](/5g-atm-doc/start/first-session/).
 
-`config.json` is created for you with empty fields. `op_config.json` is **not** created
-automatically — you write it yourself, and the application tells you it is missing when
-you open the PREPA window.
+## Base configuration files
 
-:::caution
-`config.json` contains your IVAO password in clear text, and your Hoppie logon code if you
-use datalink. It lives in your own user profile. Never share it, never post it in a
-screenshot, never commit it to a repository.
+Two files are not created for you. Ready-made ones exist: put them in the data folder
+(`%APPDATA%\com.jules.g-atm\` on Windows), g-atm closed, then start it again.
+
+| File | What it gives you | Download |
+|---|---|---|
+| `op_config.json` | The roles, the French centres (Marseille, Paris, Reims, Brest, Bordeaux) with their sector files, responsibilities, callsigns, frequencies and CPDLC stations | [op_config.json](/5g-atm-doc/files/op_config.json) |
+| `predefined_holds.json` | The predefined holding stacks of the French centres and airports, offered in the hold menu | [predefined_holds.json](https://raw.githubusercontent.com/vaccfr/CoFrance-v2/main/config/predefined_holds.json) (CoFrance-v2 repository) |
+
+To download, **right click** the link, then *Save link as…*, and keep the file name
+exactly as it is.
+
+- `op_config.json` is what OP CONF CHG PREP lists: without it, you cannot choose a
+  position. Each centre names the sector file it uses: install those sector files too.
+  See [OP CONF and PREPA mode](/5g-atm-doc/cco/op-conf/).
+- `predefined_holds.json` is optional: without it, holding still works on any waypoint
+  of the route. See [Holding](/5g-atm-doc/traffic/holds/).
+
+:::tip
+If your division gives you its own files, use them instead: they replace these ones.
+Both formats are described in [Files and folders](/5g-atm-doc/reference/files/).
 :::
 
-## Before you connect
+## Automatic updates
 
-Three things must be done before your first session, in this order:
+At each launch, g-atm asks the update server whether a newer version exists.
 
-1. **[Fill in `config.json`](/5g-atm-doc/start/configuration/)** — without it the Connect
-   button cannot authenticate you.
-2. **[Write `op_config.json`](/5g-atm-doc/start/op-config/)** — without it you can connect,
-   but the software does not know which sectors you are working, which frequency to
-   announce, or which datalink station to open.
-3. **[Run through a first session](/5g-atm-doc/start/first-session/)** — the end-to-end
-   walkthrough.
+- **No update**: nothing happens, g-atm starts normally.
+- **Update found**: a banner *Updating* with the version number and a progress bar
+  appears. The update downloads, installs, the banner says *Restarting*, and g-atm
+  starts again on the new version. There is no question to answer.
+- **Server unreachable or you are offline**: g-atm starts normally. An update never
+  blocks or delays the start.
 
-## Updating
+Every update is signed: g-atm installs only a package signed by its publisher. You lose
+nothing in an update: your settings, your window layout and your standards are written
+to the data folder as you change them, and the data folder is not touched.
 
-Install the new version over the old one. Your data folder is untouched, so your account,
-your operational configuration and your window layout survive the update.
+:::tip
+Start g-atm a minute before you take your position. If an update is waiting, it installs
+then, not in the middle of your session.
+:::
+
+## Uninstall
+
+Uninstall g-atm like any other application. If the data folder is still there
+afterwards, delete it yourself when you want your settings gone too: it holds your IVAO
+password and your Hoppie code.

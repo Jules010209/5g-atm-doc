@@ -1,115 +1,139 @@
 ---
 title: Troubleshooting
-description: The problems people actually run into, and what to do about them.
+description: The problems people run into with g-atm, what causes them, and what to do.
 ---
+
+The common problems, by area. For voice and datalink, the dedicated pages go further:
+[TeamSpeak](/5g-atm-doc/voice/teamspeak/#when-something-is-wrong) and [CPDLC
+troubleshooting](/5g-atm-doc/cpdlc/troubleshooting/).
 
 ## Connection
 
-**Connect fails immediately with `invalid credentials`.**
-A required field is empty. Check callsign, VID, password and host in `config.json` or in the
-Connect menu.
+**`invalid credentials` under the Connection button.**
+A field of the IVAO Connection window is empty: Host, Port, Callsign, Name, VID or
+Password all must be filled.
 
-**Connect times out.**
-Wrong world server, no network access, or a missing `software_key` in `config.json`.
+**`VID … is not authorized to use this application`.**
+Your VID is not on g-atm's access list. Ask the maintainer to add it. The list is read
+again at each connection: once you are added, press Connection again, no restart needed.
 
-**I disconnected and now I cannot reconnect.**
-Click **CONNECT** again in the menu bar. A disconnect followed by a connect works within the
-same session; you do not need to restart the application.
+**`timeout`.**
+The server did not answer within eight seconds. Check the Host and Port, your network
+connection, and that the server is up.
 
-**My settings are back to defaults.**
-`config.json` could not be parsed. Look for a trailing comma or a missing quote, and check
-that every string is in double quotes.
+**My VID, password or callsign are gone at the next launch.**
+The IVAO Connection window keeps what you type for the session only (except Voice host
+and Voice port). Write the values in `config.json` to keep them. See [Account
+settings](/5g-atm-doc/start/configuration/).
 
-## The picture
+**All my settings are back to their defaults.**
+`config.json` could not be read. Look for a missing quote or a trailing comma.
 
-**I see no traffic at all.**
-In order: are you connected, is your flight level window wide enough, and is your position
-in the right place? The announced `latitude` and `longitude` in `config.json` decide where
-your position sits and therefore what the network sends you.
+**I disconnected; can I reconnect?**
+Yes: press **Connection** again. No restart needed.
+
+## Traffic and picture
+
+**The picture has no map.**
+No sector file is loaded. Open **Tools → External Applications → Sector File** and tick
+one; if the list says *No .isc files*, install or download a package first. With several
+files and none chosen, g-atm loads none. See [Sector
+files](/5g-atm-doc/start/configuration/#sector-files).
+
+**Download fails with HTTP 401 or 403.**
+Downloading a sector package needs your IVAO API key in `config.json`. A 404 means the
+sector ID does not exist.
+
+**I see no traffic.**
+In order: are you connected; is the level band of the Filter Area wide enough; is the
+right sector file loaded? The network sends you traffic around the centre of the loaded
+sector file.
 
 **I see far too much traffic.**
-Narrow the flight level window. That is the primary tool. Then check that SEE ALL is off.
+Narrow the level band, and check that **See ALL** (`F10`) is off.
 
 **A flight I need has disappeared.**
-Almost certainly the level window. Flights that concern you are never hidden — but a flight
-that is not yet yours and is outside your band will be. Widen the band, or mark one of its
-fields, which forces it visible.
+Almost always the level band, or the VFR (`F9`) and MIL (`F8`) filters. Flights that
+concern you are never hidden; a flight not yet yours and outside the band is. Widen the
+band, or mark one of its fields: a marked flight is forced visible.
 
-**The screen is full of rings, routes and measurements.**
-**Radar menu → Clean → RR-Flight Leg / Lost Tracks.**
+**The picture is full of rings, measures and routes.**
+Press **CLEAN** (`End`), or use **Radar Menu → Clean**.
 
-**Labels overlap and I cannot read them.**
-Turn on **Track Label Anti-Overlap** in the Radar menu, or drag the labels by hand.
+**Labels overlap.**
+Tick **Track Label Anti-Overlap** in the Radar Menu, or drag the labels.
 
-## PREPA and sectors
+**I announce 122.800.**
+No position is validated in OP CONF CHG PREP. Validate yours: the frequency changes at
+once, without reconnecting.
 
-**`op_config.json introuvable`.**
-The file does not exist. Create it in the data folder. See [Operational
-configuration](/5g-atm-doc/start/op-config/).
+## OP CONF CHG PREP
 
-**`Secteur «X» inconnu`.**
-The name is neither a resp of the alias nor a sector known to the map data. Check the
-spelling.
+**The lists are empty, or the window says `op_config.json introuvable`.**
+There is no `op_config.json` in the data folder. Get your centre's file and put it there.
+On a Host that is not an IVAO server, g-atm reads `op_config_simu.json` first, if it
+exists. See [OP CONF and PREPA mode](/5g-atm-doc/cco/op-conf/).
 
-**OK is greyed in the PREPA window.**
-You have not selected both a responsibility — or an alias — and a role. Hover the button:
-the tooltip says what is missing.
+**OK stays greyed.**
+Hover it: the tooltip says what is missing (a resp or an alias, and a role).
 
-**My announced frequency is wrong.**
-It comes from the resp you validated in PREPA, not from `config.json`. Validate the right
-one; the change is applied immediately, without reconnecting.
+**An error in red under the lists.**
+A name in `op_config.json` is neither a resp nor a sector of the sector file, or two
+resps refer to each other. See [OP CONF and PREPA mode](/5g-atm-doc/cco/op-conf/).
 
 ## Control
 
 **Transfer Next does nothing.**
-No next sector is set. **Ctrl + left click** the NS field and choose the position.
+Transfer Next shoots to the next sector of the flight's profile, and only if that sector
+is served. When it is not, **left click** the NS field and pick the position in the
+Manual Transfer menu. Transfer Next appears only on flights you control.
 
-**I cannot find the position I want to transfer to.**
-The manual transfer menu shows one family at a time. Switch between **SCH** and **DELEG**
-at the top. If both are empty, no position of that kind is online.
+**The position I want is not in the Manual Transfer menu.**
+The menu has two tabs: **SCH** for the positions on the flight's planned route, **DELEG**
+for the others. If neither lists it, it is not online.
 
 **A flight shows STLN.**
-Another controller force-assumed it. It is no longer yours. Hover the mnemonic to see who
-took it.
+Another position took it with Force Assume. It is no longer yours.
 
 **The SHRQ mnemonic will not go away.**
-It clears only when the flight is assumed by you **and** reports your position's frequency.
-There is no timeout. Right-click it to hide it locally.
+It goes from every position when the flight is assumed, and from the position that
+received the request when it shoots the flight. **Right click** it to hide it on your
+screen; it stays in the selected label.
 
-## Voice
+**My POINT, NEGO or iCoor does not reach the other controller.**
+These work between g-atm positions only. A controller on another client does not
+receive them.
 
-**Nobody hears me.**
-Check the PTT key is captured, that the level meter moves when you speak, and that the right
-input device is selected. Use **Mic test** to hear yourself.
-
-**Voice never connects.**
-Check the `teamspeak host` in the Connect menu. Observer positions, `_OBS`, do not get a
-channel created.
-
-**PTT does not work when another window is focused.**
-It is a global shortcut, so it should. If it does not, another application has taken the
-same key. Set a different one in the TeamSpeak panel.
-
-## Datalink
-
-See the dedicated page: [CPDLC
-troubleshooting](/5g-atm-doc/cpdlc/troubleshooting/).
-
-The single most common cause of "nothing is happening" is the polling interval: the network
-is polled every 45 to 75 seconds, and that cannot be shortened.
+**DSAM never shows.**
+It needs the level selected by the pilot, which IVAO does not carry. It works only on a
+[world server](/5g-atm-doc/simulation/joining/).
 
 ## Windows
 
-**A list window has vanished.**
-It may be on a monitor you no longer have. Delete `standard_config.json` to reset every
-window to its default place.
+**A window opens where I did not expect it.**
+A window whose saved place is on a screen that is no longer there opens at its default
+place. Move it, then save your standard if you want to keep it there.
 
-**A window will not close.**
-The Modify SFPL window closes with its **×** only, on purpose, so a long edit is never lost
-by a stray click.
+**The Modify SFPL window does not close when I click elsewhere.**
+That is on purpose, so that a long edit is not lost: close it with its cross.
 
-## When a menu entry does nothing
+**I want my default layout back.**
+Close g-atm and delete `standard_config.json` from the data folder. You lose your window
+layout and your [Local Settings](/5g-atm-doc/reference/local-settings/); your position
+standards come back from `standards.json`.
 
-Check whether it is **greyed**. A number of entries exist for fidelity with 4-Flight but are
-not implemented. The full list is in [What is
-g-atm](/5g-atm-doc/start/overview/#inactive-functions).
+## Updates
+
+**g-atm restarted on its own at launch.**
+An update was installed: the *Updating* banner showed it. Nothing is lost.
+
+**The update did not come.**
+g-atm checks at launch and starts anyway if the update server cannot be reached. Start
+it again later, or install the new version from the
+[Releases page](https://github.com/Jules010209/5g-atm/releases).
+
+## A menu entry does nothing
+
+Some entries are drawn because the booklet shows them, with nothing behind them (OPSUP,
+Mark LAT-LONG, Find LAT-LONG…). The list and the reasons are in [What g-atm does not
+do](/5g-atm-doc/reference/not-implemented/).

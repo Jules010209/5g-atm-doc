@@ -1,90 +1,106 @@
 ---
 title: Sending clearances
-description: Issuing a level, a speed or a direct by datalink, and reading the state of the dialogue.
+description: Sending a level, a heading, a direct or a speed by datalink, and reading and acknowledging the frame that follows the dialogue.
 ---
 
-## The DLK button
+A datalink clearance is given from the usual label menu, with **DLK** armed. The system
+takes it exactly like a voice clearance; the label then follows the dialogue with the
+pilot until the answer comes.
 
-Three menus can send their value by datalink: **level**, **speed** and **direct**. Each has
-a **DLK** button at the bottom.
+## Sending a clearance
 
-1. **Click DLK.** It turns blue: datalink is armed.
-2. **Click the value.** The clearance goes out over CPDLC instead of being applied
-   silently.
+Four menus have a **DLK** button: CFL, Waypoint, AHDG and ASP.
 
-DLK is greyed when the clearance cannot be sent. Hover it and the tooltip says why:
+1. Open the menu from the label, as usual.
+2. Arm DLK: left click **DLK** (it turns blue, underlined), or press the **CPDLC** key
+   (`Alt`). Each press toggles DLK, even while you type in the field. Hold `Alt` as you
+   click the label field and the menu opens with DLK already armed.
+3. Choose the value.
 
-| Reason | Fix |
-|---|---|
-| The flight is not in a datalink session | Nothing to do, use the frequency |
-| The flight is not assumed by you | Assume it first |
-| A dialogue of that kind is already open | Wait for the current one to close |
+![The CFL menu of EWG16VR with DLK armed: E.DESC and EXPEDITE are greyed](../../../assets/screenshots/ch06-cfl-dlk.app.png)
 
-That last rule matters: **one dialogue per kind of clearance at a time**. You cannot have
-two level clearances outstanding on the same flight.
+DLK is greyed when the flight cannot take it. Hover it for the reason: the flight has no
+datalink session with you, you have not assumed it, or a dialogue of the same kind is
+already open with it.
 
-## Reading the box
-
-Once sent, the field carrying the clearance is **framed**, and the frame's colour is the
-state of the dialogue. The value shown inside the box is **what you sent**, not what the
-aircraft is doing.
-
-| Colour | State | Meaning |
+| Menu | What goes to the aircraft | Not possible by datalink |
 |---|---|---|
-| **White** | Sent | Waiting for the pilot's answer |
-| **Yellow** | Standby | The pilot answered `STANDBY`. They have seen it and will answer later |
-| **Orange** | Unable | The pilot refused, or the dialogue timed out. **Your action is required** |
-| **Red** | Corruption | The exchange is inconsistent. Treat it as failed |
+| CFL | `CLIMB TO FL340`, `DESCEND TO FL280`, or `MAINTAIN FL340` when the level is the flight's own | E.DESC, EXPEDITE (greyed while DLK is armed) |
+| Waypoint | `PROCEED DIRECT TO MMD` | Double direct, typed point |
+| AHDG | `FLY HEADING 090`. A relative turn is sent as the absolute heading it gives | Resume |
+| ASP | `MAINTAIN 280KT`, `MAINTAIN M.78` | min, max |
 
-Each kind of clearance frames its own field:
+The system clearance is applied first, as if you had spoken it; then the message leaves.
+Transfers and Comm Resp changes are on [Transfer and Comm
+Resp](/5g-atm-doc/cpdlc/transfer/), the squawk on [Other
+messages](/5g-atm-doc/cpdlc/other-messages/).
+
+## Reading the frame
+
+Once the message has left, the field that carries the clearance is **framed** on the
+label, and shows the value you sent.
 
 | Clearance | Field framed |
 |---|---|
-| Cleared level | CFL |
-| Speed | Ground speed |
+| Level | CFL |
 | Direct | CNAV |
+| Heading | The heading field, shown in the base label too while the dialogue lasts |
+| Speed | The assigned speed, shown in the base label too while the dialogue lasts |
 
-So you can see at a glance which clearance is in which state, on the label itself.
+Hover the framed field: the tooltip recalls the time and the order, for example
+`1248 PROCEED DIRECT TO AVN`.
 
-## When it succeeds
+![Selected label of EWG16VR: AVN is framed in white, the tooltip reads 1248 PROCEED DIRECT TO AVN](../../../assets/screenshots/ch06-directe.app.png)
 
-The pilot answers `WILCO`, the box disappears and the clearance is applied to the flight
-exactly as if you had issued it normally. There is nothing to acknowledge.
+The colour of the frame is the state of the dialogue:
 
-## When it fails
+| Frame | State | Tooltip | What to do |
+|---|---|---|---|
+| **White** | Sent, waiting for the pilot | The order | Wait |
+| **Yellow** | The pilot answered `STANDBY` | The order | Wait. The time limit starts again |
+| none | The pilot answered `WILCO` | — | Nothing: the dialogue is closed |
+| **Orange** | `UNABLE`: the pilot refused | `HHMM UNABLE, DUE TO …` | Right click the field |
+| **Orange** | `TIMEOUT`: no answer in time (PILOT LATE) | `HHMM TIMEOUT` | Right click, then **CANCEL** |
+| **Orange** | The message could not be sent | `HHMM TRANSMISSION FAILED` | Right click the field |
+| **Orange**, orange bolt | The aircraft answered `AIR SYSTEM TIMEOUT` | `HHMM AIR SYSTEM TIMEOUT` | Right click the field or the bolt |
+| **Orange**, orange bolt | The aircraft answered with an error, such as `NOT CURRENT DATA AUTHORITY` | The text received | Right click the field or the bolt |
+| **Red** | CORRUPTION: the answer came from another flight | `HHMM ‹other flight› ‹its answer›` | Find the other flight, then right click the field |
 
-An **orange** or **red** box needs you.
+![Base label of EWG16VR: the CFL 35 is framed in orange after an UNABLE, the bolt stays white](../../../assets/screenshots/ch06-cfl-rtv.app.png)
 
-**Right-click the framed field.** A cancel menu opens, and the dialogue is cleared from
-your screen. Then **go back to voice**: the clearance was not accepted, and the aircraft is
-still doing what it was doing before.
+A frame stays as long as the dialogue is open: the label tells you, at a glance, which
+clearance is in which state. Different kinds of dialogues run side by side, each on its
+own field, their frames next to each other.
 
-The same gesture works on all three fields, and on the next sector field for a failed
-transfer.
+## Time limits
 
-## Timeouts
+| Limit | Value | Result |
+|---|---|---|
+| Pilot answer | 119 s, started again by a `STANDBY` | `TIMEOUT` (PILOT LATE) |
+| Technical acknowledgement from the aircraft | 40 s | `TIMEOUT` (PILOT LATE) |
 
-A dialogue that gets no answer within about two minutes turns **orange** on its own. The
-message may never have reached the aircraft, or the pilot may have ignored it. Either way,
-cancel it and use the frequency.
+The 40-second limit only applies to aircraft that send technical acknowledgements. The
+Hoppie pilot clients in use today do not, so in practice only the 119-second limit
+applies.
 
-## Check Stuck Micro
+## Acknowledging a failed dialogue
 
-**Tools → CPDLC → Check Stuck Micro** sends the stuck microphone message to **every flight
-currently in a datalink session** with your station.
+An orange or red frame does not go away on its own: it waits for you.
 
-Use it when a carrier is blocking the frequency: the flights that can read datalink get the
-message even though nobody can talk.
+- **Most cases**: **right click** the framed field. The frame disappears at once.
+- **TIMEOUT**: right click the field. A small menu opens with `TIMEOUT` as its title, the
+  callsign, **MANACK** (always greyed) and **CANCEL**. Left click **CANCEL**.
+- **Orange bolt** (`AIR SYSTEM TIMEOUT` or error): you can right click the bolt instead of
+  the field.
 
-A dialogue box reports what happened. When no flight is in session it says so plainly
-rather than pretending to have sent something.
+![The acknowledgement menu: TIMEOUT, BER990U, MANACK greyed, CANCEL](../../../assets/screenshots/ch06-ack.app.png)
 
-The entry is greyed when the station is offline.
+:::caution
+Acknowledging restores nothing. The system took the clearance when you sent it, but the
+aircraft did not accept it. Go back to the frequency, and set the label back to what the
+aircraft is really doing.
+:::
 
-## Ending a session
+---
 
-**CPDLC Logoff** in the aircraft menu ends the session with that flight: the aircraft
-receives an end-of-session message followed by a logoff, and the dot disappears from the
-label.
-
-The entry is greyed when the flight has no session with you.
+*4-Flight booklet 3.0: §6.2.a and §6.2.c (p. 49–53).*

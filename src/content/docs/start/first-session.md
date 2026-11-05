@@ -1,110 +1,139 @@
 ---
 title: Your first session
-description: A complete walkthrough, from opening the application to disconnecting.
+description: A guided first session, from launch to disconnect, with links to the chapters that explain each step.
 ---
 
-This page assumes `config.json` and `op_config.json` are ready. If not, do those first:
-[Account settings](/5g-atm-doc/start/configuration/) and [Operational
-configuration](/5g-atm-doc/start/op-config/).
+This page walks you through one short session: load the maps, choose your position,
+connect, read the picture, assume a flight, give it a level and transfer it. Each step
+links to the chapter that explains it in full.
 
-## 1. Choose what you are working
+Before you start, [install g-atm](/5g-atm-doc/start/install/) and check that your
+`op_config.json` describes your centre ([OP CONF and PREPA
+mode](/5g-atm-doc/cco/op-conf/)).
 
-Open the application. Before connecting, click the **role label in the centre of the menu
-bar** to open the PREPA window.
+## 1. Launch
 
-Select a **resp** or an **alias**, select a **role**, check the resolved sector list at the
-bottom, and press **OK**.
+Start g-atm a minute before your session. If an update is available, it installs and
+g-atm restarts on its own. You then see the Global Menu across the top and the radar
+picture below.
 
-Doing this first means your frequency and your datalink station are correct from the very
-first second of your session.
+## 2. Load the sectors
 
-## 2. Connect to the network
+Open **Tools → External Applications → Sector File**.
 
-Click **CONNECT** at the right end of the menu bar. The connection panel opens with the
-values from `config.json` already filled in.
+- First time: **Install…** a sector package from your disk, or type its IVAO ID in
+  **Sector ID** and press **Download**.
+- Then tick the sector file of your centre in the list. The maps appear at once.
 
-| Field | Note |
-|---|---|
-| host / port | The IVAO world server. |
-| teamspeak host / port | The voice server. It is also published in your ATIS. |
-| callsign | The position you are opening, for example `LFMM_W_CTR`. |
-| nom | Your name, as seen by others. |
-| VID / password | Your IVAO credentials. |
+You only do this once: g-atm loads the same file at the next launch. See [Sector
+files](/5g-atm-doc/start/configuration/#sector-files).
 
-Press **Connection**.
+## 3. Choose your position
 
-Three things then happen on their own:
+Click the **role field** in the centre of the Global Menu (it reads `------/------` until
+you choose). The **OP CONF CHG PREP** window opens.
 
-1. Traffic starts appearing on the scope.
-2. **Voice connects** to the TeamSpeak server, a channel named after your callsign is
-   created if it does not exist, and you are moved into it. Observer positions are
-   excluded.
-3. **CPDLC comes online**, if datalink is enabled and configured, and your station code is
-   published in your ATIS.
+![The OP CONF CHG PREP window: RESPS and ALIAS lists at the top, ROLE list below, OK greyed until a choice is made](../../../assets/screenshots/ch15-ocp.app.png)
 
-If the connection fails, the reason is shown in red under the buttons.
+1. Pick a responsibility in **RESPS**, or a whole grouping in **ALIAS**.
+2. Pick your role in **ROLE**, for example `TACTICAL`.
+3. Press **OK**.
 
-## 3. Set up your picture
+The role field now shows your choice, for example `RAW/TACTICAL`. Doing this before you
+connect means g-atm announces the right frequency from the first second. You can change
+it at any time during the session: see [OP CONF and PREPA mode](/5g-atm-doc/cco/op-conf/).
 
-Two settings decide what you see:
+## 4. Connect
 
-- The **flight level window** at the right of the menu bar filters by altitude. Set the
-  lower and upper limits to your sector's vertical extent.
-- **VFR**, **MIL** and **SEE ALL** toggle categories of traffic that are hidden by default.
-  A blue frame means the filter is active.
+Open **Tools → External Applications → IVAO Connection**. Check the fields (host,
+callsign, name, VID, password; see [Account settings](/5g-atm-doc/start/configuration/))
+and press **Connection**.
 
-Flights that concern you are never hidden by these filters, whatever you set.
+When the session opens:
 
-Then pan and zoom to your area: **drag with the left button** to move the image, **mouse
-wheel** to zoom.
+- traffic appears on the picture;
+- voice connects to the Voice host and puts you in a channel named after your callsign
+  (see [TeamSpeak](/5g-atm-doc/voice/teamspeak/));
+- if datalink is set up, your CPDLC station comes online
+  (see [Setting up datalink](/5g-atm-doc/cpdlc/setup/)).
 
-## 4. Take a flight
+## 5. Read the picture
 
-Find an inbound flight and **left-click its callsign**. The aircraft menu opens with its
-first entry already under your pointer, so a second click validates it immediately.
+Each flight is drawn in the colour of its state for your position:
 
-- If the flight is being transferred to you, the first entry is **Assume**.
-- Once assumed, the label changes colour and the flight is yours.
+| Colour | State | Meaning |
+|---|---|---|
+| Green | PREPA | Coming to you |
+| White | RESP | Yours: you control it |
+| Light grey | SURV | No longer yours, still worth watching |
+| Dim grey | AUTRE | Of no interest to you a priori |
 
-## 5. Issue clearances
+See [States and colours](/5g-atm-doc/flights/states/).
 
-Everything is done on the label:
+Set the level band of your sector in the **Filter Area**, at the right of the Global
+Menu: the two numbers are the lower and upper levels shown. Flights that concern you
+stay visible whatever the band.
 
-| To clear | Click |
-|---|---|
-| A level | the **CFL** field, then pick the level |
-| A speed | the **speed** field |
-| A heading | the **heading** field |
-| A direct | the **CNAV** field, then pick the waypoint |
-| An exit level | the **XFL** field |
+![The Filter Area: DEFAULT, the level band 55 to 660, the VFR, MIL and See ALL buttons, and the range field](../../../assets/screenshots/ch01-filter-area.app.png)
 
-Each opens a small menu next to the field. Pick a value, it is applied and the label
-updates.
+**Drag** the picture with the left button to move it, turn the **mouse wheel** to zoom.
+See [Moving around the picture](/5g-atm-doc/position/navigation/) and [Filter Area and
+filtering](/5g-atm-doc/position/filters/).
 
-## 6. Transfer it
+## 6. Assume a flight
 
-When the flight is leaving your airspace:
+A flight transferred to you is **assumable**: its label is still green, its callsign
+turns white.
 
-1. Set the **next sector** if it is not already known — hold **Ctrl** and left-click the
-   **NS** field to choose the receiving position from the list.
-2. Left-click the callsign and choose **Transfer Next**.
+1. **Left click** its callsign. The **Callsign Menu** opens with **Assume** right under
+   your pointer.
+2. **Left click** again without moving: the flight is assumed and its label turns white.
 
-The receiving controller gets the offer and takes the flight. If you need to hand off to a
-position that is not the planned next sector, use **Manual Trf…** in the same menu.
+These two clicks are the 4F **fake double click**: the first opens a menu with the
+likely choice under the pointer, the second takes it. See [Assume and
+shoot](/5g-atm-doc/frequency/assume-shoot/).
 
-## 7. Disconnect
+## 7. Give a level
 
-Click **DISCONNECT** in the menu bar, then **Disconnect** in the panel.
+1. **Left click** the **CFL** field of the label (the cleared level). The CFL menu opens.
+2. **Left click** the level you clear, or type it in the field at the bottom and press
+   Enter.
 
-Voice is closed, every datalink session is terminated cleanly with a logoff to each
-aircraft, and the network connection is closed. You can connect again in the same session
-without restarting the application.
+![The CFL menu of a flight: RFL 310 at the top, E.DESC, a list of levels with 310 marked, EXPEDITE, DLK, and the entry field](../../../assets/screenshots/ch05-cfl.app.png)
+
+Say the clearance to the pilot on the frequency: the label is your record. To clear by
+datalink instead, see [Sending clearances](/5g-atm-doc/cpdlc/uplinks/). Speed, heading
+and directs work the same way, on their own fields: see [Levels: the CFL
+menu](/5g-atm-doc/clearances/levels/) and the next pages.
+
+## 8. Transfer it
+
+When the flight is about to leave your sector:
+
+1. **Left click** its callsign. On a flight you control, the first row of the Callsign
+   Menu is **Transfer Next**.
+2. **Left click** **Transfer Next**: the flight is shot to the next sector, and its
+   callsign turns grey until the next controller assumes it.
+
+![The Callsign Menu of an assumed flight, with Transfer Next as its first row](../../../assets/screenshots/ch11-menu-assume.app.png)
+
+To hand it to another position, **left click** the **NS** field (next sector) instead and
+pick the position in the Manual Transfer menu. See [Assume and
+shoot](/5g-atm-doc/frequency/assume-shoot/) and [Manual transfer, NS,
+DELEG](/5g-atm-doc/frequency/transfer/).
+
+## 9. Disconnect
+
+Open **Tools → External Applications → IVAO Connection** and press **Disconnect**. Voice
+closes with the session, and the CPDLC sessions are ended. You can connect again
+without restarting g-atm.
 
 ## What to read next
 
 | If you want to | Read |
 |---|---|
-| Understand every field on a label | [Track and label anatomy](/5g-atm-doc/labels/anatomy/) |
-| Know every mouse gesture | [Mouse and keyboard](/5g-atm-doc/reference/mouse-keyboard/) |
-| Measure, extrapolate, draw rings | [Analysis tools](/5g-atm-doc/tools/analysis/) |
+| Know the screen | [The screen](/5g-atm-doc/position/layout/) |
+| Know every field of a label | [Label fields](/5g-atm-doc/labels/fields/) |
+| Have every gesture and key in one place | [Mouse and keyboard](/5g-atm-doc/reference/mouse-keyboard/) |
+| Measure and separate | [Group, SEP, QDM, CPA](/5g-atm-doc/conflicts/group-sep-qdm/) |
 | Control by datalink | [CPDLC overview](/5g-atm-doc/cpdlc/overview/) |

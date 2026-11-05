@@ -1,95 +1,99 @@
 ---
 title: Setting up datalink
-description: Getting a Hoppie code, choosing your station code, and bringing the station online.
+description: Enabling CPDLC, choosing the station code, bringing the station online, and what pilots see when they log on.
 ---
 
-## 1. Get a Hoppie logon code
+Before any datalink exchange, g-atm must hold a **station** on the datalink network. You
+set it up once; afterwards it comes online by itself when you connect.
 
-Datalink runs on the Hoppie ACARS network. Request a logon code once from the Hoppie ACARS
-site; it is personal and permanent.
+## 1. Enable datalink in your account settings
 
-## 2. Enable it in `config.json`
+Datalink is off by default. In `config.json`, the `cpdlc` block needs:
 
-```json
-"cpdlc": {
-  "logon_code": "your-hoppie-code",
-  "base_url": "https://www.hoppie.nl/acars/system/connect.html",
-  "enabled": true
-}
-```
+| Field | Value |
+|---|---|
+| `enabled` | `true`. With `false`, nothing datalink ever starts |
+| `logon_code` | Your personal Hoppie logon code, requested once from the Hoppie ACARS site |
+| `base_url` | Leave the default unless your division runs a compatible server |
 
-`enabled` must be `true`. With `false`, every datalink function stays inert whatever else
-is configured.
-
-Keep `base_url` as it is unless your division runs its own compatible server.
+See [Account settings](/5g-atm-doc/start/configuration/) for the file itself.
 
 :::caution
-The logon code is a secret. It is stored in clear text in `config.json`. Do not share the
-file and do not show it in a screenshot.
+The logon code is a secret tied to your Hoppie account. Never show it in a screenshot, a
+chat or a shared file.
 :::
 
-## 3. Choose your station code
+The same two settings (`enabled` and a logon code) are needed in a simulation session,
+even though the code is then never sent: the station is the world server's. See [Joining a
+simulation](/5g-atm-doc/simulation/joining/).
 
-The **station code** is what pilots type in the aircraft. It is not your position callsign:
-ACARS callsigns are **four letters, no underscore**. `LFM1` is valid, `LFMM_W_CTR` is not.
+## 2. The station code
 
-Declare it per position in `op_config.json`:
+The **station code** is what pilots type in their aircraft to log on. It is not your
+position callsign: ACARS codes are usually four characters (g-atm accepts 3 to 7 letters
+or digits), never with `_`. `LFM1` is valid, `LFMM_W_CTR` is not.
+
+Each position of the operational configuration can declare its code, and fallback codes,
+in `op_config.json`:
 
 ```json
 "cpdlc": { "logon": "LFM1", "fallback_logons": ["LFM2", "LFMM"] }
 ```
 
-The network allows **one controller per code**. If `LFM1` is already held by someone else,
-g-atm tries `LFM2`, then `LFMM`, and adopts the first free one. Without fallbacks, the
-station stays offline until the code is released, which takes about 100 seconds after the
-other controller leaves.
+The network allows **one station per code**. If `LFM1` is already held by another
+controller, g-atm tries `LFM2`, then `LFMM`, and keeps the first one that is free. A
+released code becomes free again about 100 seconds later.
 
-If your position declares no `cpdlc` block, the station code falls back to the centre part
-of your callsign.
+When the position you validated declares no code, g-atm uses the centre part of your
+callsign: `LFMM` for `LFMM_W_CTR`. See [OP CONF and PREPA mode](/5g-atm-doc/cco/op-conf/)
+for the operational configuration.
 
-## 4. Bring the station online
+## 3. Bring the station online
 
-Once `enabled` is `true` and a code is available, **the station comes online on its own when
-you connect to the network** — not before. There is nothing to click.
+With datalink enabled, the station comes online **by itself when you connect to the
+network**. When you validate another position in PREPA, the station switches to that
+position's code if it differs. When you disconnect, the station goes offline.
 
-To do it manually, or to check the state: **Tools → CPDLC**.
+To check it, or to do it by hand: **Tools → External Applications → CPDLC Station**.
 
-| Line | Meaning |
+| Entry | Meaning |
 |---|---|
-| Status line | Read-only. `ONLINE LFM1`, `OFFLINE`, `CONNECTING`, or an error |
-| **Connect** / **Disconnect** | Brings the station online or takes it offline |
-| **Check Stuck Micro** | Greyed unless online |
+| First line (read only) | The state of the station, see below |
+| **Connect** / **Disconnect** | Brings the station online, or takes it offline |
+| **Logoff ‹callsign›** | One entry per flight logged on to you: ends that flight's datalink session |
 
-Hovering the status line shows the last error, when there is one.
-
-## 5. Check your ATIS
-
-Once online, your ATIS carries a third line:
-
-```
-CPDLC ID LFM1
-```
-
-That is how pilots discover which code to use. If the line is missing, the station is not
-online.
-
-## Changing position during a session
-
-Validating a different resp in the PREPA window **switches the station** to that resp's
-code, without disconnecting from the network. Sessions with flights you are still working
-are unaffected.
-
-## Station states
-
-| State | Meaning |
+| First line | State |
 |---|---|
-| `OFFLINE` | Not connected. No datalink at all |
-| `CONNECTING` | Trying the codes in order |
-| `ONLINE <code>` | Working. The code shown is the one actually adopted |
-| `LOCK CONFLICT` | Every code you declared is held by someone else. It clears on its own when one is released |
-| `ERROR` | Network or configuration problem. Hover for the reason |
+| `LOGGED OFF` | The station is offline. No datalink at all |
+| `LOGGING IN WITH LFM1` | Trying the code |
+| `LOGGED WITH LFM1` | Online. The code shown is the one actually held, perhaps a fallback |
+| `LFM1 CALLSIGN IN USE` | Every code you declared is held by someone else |
+| `ERROR WITH LFM1` | The station could not come online |
 
-## Testing without the live network
+The states the station reports are also written in the **System Warning Window** of the
+Global Menu (for example `CPDLC LFM1 ONLINE`), with the server's reason when it refuses.
+See [Global Menu](/5g-atm-doc/position/global-menu/) and, when it goes wrong, [CPDLC
+troubleshooting](/5g-atm-doc/cpdlc/troubleshooting/).
 
-`base_url` accepts any compatible server, including one running on your own machine. That
-is how the datalink chain can be exercised end to end without touching the public network.
+Once the station is online, your ATIS carries the line `CPDLC ID LFM1`. That is how pilots
+find the code to use.
+
+## What happens when a pilot logs on
+
+1. The pilot enters your station code in the aircraft and sends a logon request.
+2. g-atm accepts it automatically if the flight is in the traffic you receive. The
+   aircraft gets `LOGON ACCEPTED`, then your station as its current ATC unit.
+3. A **lightning bolt** appears after the callsign on the label.
+
+A logon from a flight that is not in your traffic is refused with `UNABLE DUE TO
+AIRSPACE`.
+
+## How a session ends
+
+| Cause | What the aircraft receives |
+|---|---|
+| You choose **Logoff ‹callsign›** in the CPDLC Station menu | `CONTROLLER TERMINATED CPDLC`, then a logoff |
+| You take the station offline, or disconnect from the network | The same, for every flight logged on |
+| You transfer the flight by datalink and the pilot accepts | A logoff from your station; the aircraft moves to the next unit |
+| The pilot logs off | — (any dialogue still open with that flight turns orange, `TRANSMISSION FAILED`, and waits for your acknowledgement) |
+| The flight is missing from the traffic for three polls in a row | — (session, dialogues and requests are dropped) |

@@ -1,72 +1,93 @@
 ---
 title: CPDLC overview
-description: What datalink gives you, how a session starts, and what the dot on a label means.
+description: What datalink does in g-atm, which network carries it, how a datalink flight looks on the label, and who may use it.
 ---
 
-CPDLC lets you exchange clearances and requests with a pilot **in writing**, without using
-the frequency. On IVAO it runs over the **Hoppie ACARS network**, which is what pilot
-add-ons use for datalink.
+CPDLC (controller-pilot datalink communications) lets you exchange clearances and requests
+with a pilot in writing. In g-atm you use it from the same label menus as voice
+clearances, with the **DLK** button or the **CPDLC** key (`Alt`).
+
+## What carries it
+
+On IVAO, datalink runs on the **Hoppie ACARS network**, the service pilot add-ons use for
+CPDLC. g-atm holds a **station** on that network: pilots log on to it with the station code
+published in your ATIS, and every message goes through it.
+
+In a simulation session hosted by a g-atm world server, the station is the **server's own
+station**, not Hoppie: nothing is sent to Hoppie and your Hoppie code never leaves your
+machine. See [Joining a simulation](/5g-atm-doc/simulation/joining/).
+
+To bring the station online, see [Setting up datalink](/5g-atm-doc/cpdlc/setup/).
+
+:::note[Different from the real 4-Flight]
+On the real system, datalink goes through CoFlight and the whole centre shares one
+connection. On IVAO each g-atm position holds its own station: a dialogue stays with the
+station that opened it.
+:::
 
 ## What you can do with it
 
-| | |
+| | Where |
 |---|---|
-| **Receive logons** | A pilot enters your station code in the aircraft and requests a connection |
-| **Send clearances** | Cleared level, speed, and direct to a waypoint |
-| **Receive requests** | Level and direct requests, answered from a two-click menu |
-| **Transfer** | Hand a flight to the next sector by datalink instead of by voice |
-| **Check Stuck Micro** | Ask every connected flight to check for a stuck microphone |
+| Send a level, heading, direct or speed | [Sending clearances](/5g-atm-doc/cpdlc/uplinks/) |
+| Answer a pilot's level or direct request | [Pilot requests](/5g-atm-doc/cpdlc/downlinks/) |
+| Transfer a flight, change its Comm Resp | [Transfer and Comm Resp](/5g-atm-doc/cpdlc/transfer/) |
+| Change a squawk, check a stuck microphone, send other messages, read the history | [Other messages](/5g-atm-doc/cpdlc/other-messages/) |
 
-## How a session starts
+What cannot go by datalink: an emergency descent (E.DESC), Expedite, a minimum or maximum
+speed, a double direct, a point typed in the Waypoint menu, a vertical rate.
 
-1. Your station is **online** and its code is published in your ATIS as
-   `CPDLC ID LFM1`.
-2. The pilot enters that code in the aircraft and sends a logon request.
-3. g-atm accepts it, and the aircraft receives `LOGON ACCEPTED` followed by the name of
-   your unit.
-4. A **dot appears in front of the callsign** on the label.
+## How a datalink flight looks
 
-A logon is **refused** when the aircraft is not in the traffic you can see. There is no
-point holding a datalink session with a flight that is not on the network.
+A flight logged on to your station shows a **lightning bolt** right after its callsign,
+in every label format.
 
-## The dot
+![Base label of EWG16VR with the lightning bolt after the callsign](../../../assets/screenshots/ch06-eclair.app.png)
 
-The dot in front of the callsign means exactly one thing: **this flight is in a CPDLC
-session with your station**. No dot, no datalink — every datalink function is greyed for
-that flight.
+The bolt's colour tells you whether datalink needs you:
 
-## How a session ends
-
-| Cause | What happens |
+| Bolt | Meaning |
 |---|---|
-| You choose **CPDLC Logoff** in the aircraft menu | The aircraft receives an end-of-session message and a logoff |
-| You **transfer the flight by datalink** | The session moves to the next unit |
-| You take the station **offline** | Every session is terminated cleanly, one by one |
-| You **disconnect from the network** | Same |
-| The flight leaves the traffic feed | The session is dropped after a few polling cycles |
+| Label colour (white on an assumed flight) | Logged on, nothing pending |
+| **Blue** | A pilot request is waiting, or the aircraft has answered a message that asked for a report. Look at the selected label |
+| **Orange** | A system failure: the aircraft sent `AIR SYSTEM TIMEOUT` or an error. Right click the bolt to acknowledge it |
 
-The application never leaves a session dangling. Every path out sends the aircraft a proper
-logoff.
+![Base label of EXS32M with a blue bolt: a request is waiting, the request line itself shows only in the selected label](../../../assets/screenshots/ch06-req-late.app.png)
 
-## Things worth knowing
+A refusal (`UNABLE`), a pilot who does not answer in time, or a corrupted exchange leave
+the bolt in the label colour: the frame around the field tells you instead. See [Sending
+clearances](/5g-atm-doc/cpdlc/uplinks/#reading-the-frame).
 
-**Messages are not instant.** The network is polled every 45 to 75 seconds, deliberately
-irregular, as required by the Hoppie service. A pilot request can therefore take up to a
-minute to appear on your screen, and your clearance can take as long to reach the aircraft.
-This is normal, and it is why datalink is used for planning, not for anything urgent.
+The bolt also stays on a flight you have just transferred by datalink, and on a flight
+that still has a dialogue for you to acknowledge.
 
-**One station code at a time.** The network only allows one controller per code. If yours
-is already taken, g-atm tries the fallback codes you configured. See [Setting up
-datalink](/5g-atm-doc/cpdlc/setup/).
+## Who holds the rights
 
-**Datalink never replaces the frequency.** If a dialogue fails or times out, the label
-tells you, and the answer is to pick up the microphone.
+Only the position that has the flight **assumed** (see [States and
+colours](/5g-atm-doc/flights/states/)) can use datalink with it:
 
-## Where to go next
+- the DLK buttons and the CPDLC key work only on a flight you have assumed and that is
+  logged on to your station;
+- pilot requests and pending messages are shown only to the position that has the flight
+  assumed.
 
-| | |
-|---|---|
-| Get datalink working | [Setting up datalink](/5g-atm-doc/cpdlc/setup/) |
-| Send a level, a speed, a direct | [Sending clearances](/5g-atm-doc/cpdlc/uplinks/) |
-| Answer a pilot request | [Receiving requests](/5g-atm-doc/cpdlc/downlinks/) |
-| Hand a flight over | [Datalink transfer](/5g-atm-doc/cpdlc/transfer/) |
+A shot flight (transferred, waiting for the next sector) is no longer yours for datalink.
+
+Each flight has **one dialogue per kind of clearance** at a time: while a level clearance
+waits for its answer, the DLK of the CFL menu is greyed for that flight. Dialogues of
+different kinds (a level and a direct, say) run in parallel.
+
+## Timing
+
+The Hoppie network has no push: g-atm asks it for new messages every 45 to 75 seconds, at
+random intervals, as the service requires. After you send something that expects an
+answer, it asks every 20 seconds for two minutes. An answer or a request can therefore
+take up to a minute to appear. Against a simulation server, the station polls every few
+seconds.
+
+Datalink never replaces the frequency. When a dialogue fails, the label tells you, and the
+answer is to use the radio.
+
+---
+
+*4-Flight booklet 3.0: §6.1 (p. 49).*

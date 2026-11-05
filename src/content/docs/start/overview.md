@@ -1,71 +1,81 @@
 ---
 title: What is g-atm
-description: What the software does, who it is for, and what it does not do.
+description: What g-atm does, who it is for, how close it is to 4-Flight, and what it is not.
 ---
 
-g-atm is an air traffic control client for the **IVAO** network. It is modelled on
-**4-Flight**, the system used by French en-route control centres, and reproduces its
-screen, its labels, its menus and its working methods as closely as a simulation client
-can.
-
-If you have controlled with another IVAO client before, expect a different philosophy.
-There is no floating toolbar full of buttons. Almost everything is done **on the label
-itself**: you click the field you want to change, a small menu opens next to it, you pick
-a value. The radar image stays clean and the information you need is attached to the
-flight it belongs to.
+g-atm is an air traffic control client for the **IVAO** network. It reproduces
+**4-Flight** (4F), the system of the French en-route control centres: its screen, its
+labels, its menus, its colours and its working methods.
 
 ## Who it is for
 
-Controllers working an **en-route (CTR) or approach (APP) position** on IVAO who want the
-4-Flight working environment. It assumes you already know how to control: this guide
+IVAO controllers working an en-route (CTR) or approach (APP) position who want the
+4-Flight working environment. The guide assumes you already know how to control: it
 explains the software, not the job.
+
+If you know the real system, the guide follows the chapter order of the 4-Flight
+training booklet, so you can go from a booklet chapter to the same chapter here.
+
+## How it works
+
+There is no toolbar full of buttons. Almost everything is done **on the label**: you
+click the field you want to change, a small menu opens next to it, you pick a value. The
+rest lives in the **Global Menu** across the top of the screen (Status, Set Up, Tools)
+and in two context menus, the Radar Menu and the Track Menu.
+
+![The g-atm screen: the Global Menu at the top with the Tools menu open, sector maps and flight labels below](../../../assets/screenshots/ch14-tools-sequencing.app.png)
+
+The top band holds the clock, the Status, Set Up and Tools menus, your position and role
+in the centre, the message icons, and the Filter Area on the right.
 
 ## What it gives you
 
-- A **radar picture** with sector maps, tracks, speed vectors, history dots and trails.
-- **4-Flight labels** in three formats (base, extended, selected), with the real field
-  layout, the real occultation rules and the real mnemonics.
-- **Flight ownership**: assume, release, transfer, inbound offers, manual transfer to any
-  online position.
-- **Clearances** issued from the label: cleared level, speed, heading, direct to a
-  waypoint, exit level.
-- **Coordination**: point session, coordination notes, frequency requests, next sector.
-- **Analysis tools**: QDM, SEP, range rings, extrapolation, velocity vectors, history
-  dots, CLEAN.
-- **Safety nets**: STCA on radar tracks and TCT on cleared trajectories.
-- **Flight lists**: sector list, departure and arrival lists, Agenda, DYP Info.
-- **Integrated voice** over the IVAO TeamSpeak servers, connected automatically with your
-  network session.
-- **CPDLC datalink** through the Hoppie ACARS network: pilot logons, clearances, pilot
-  requests, and datalink transfer.
+- A radar picture with sector maps, tracks, comets, speed vectors and labels in the 4F
+  formats (base, selected, extended with its tabs).
+- The 4F flight states and colours: PREPA, RESP, SURV, AUTRE.
+- Clearances from the label: level (CFL), exit and entry levels (XFL, EFL), route and
+  directs, heading, speed, rate.
+- Frequency states: assume, shoot, manual transfer, SKIP, SHRQ, Reclaim, LOST.
+- Coordination: POINT, NEGO, FL?, iCoor notes, highlights (most of it between g-atm
+  positions, see below).
+- Analysis tools: group, SEP, QDM, CPA, extrapolation, Range Rings, Agenda and
+  Datablocks.
+- Safety nets and monitoring: STCA, TCT, APW, CLAM, INTRU and the alert lists.
+- Arrivals and departures: sequencing, runway and STAR, holds, STAMAN, departure lists.
+- Configuration changes: the OP CONF CHG PREP window, splitting and grouping sectors.
+- **CPDLC** over the Hoppie network.
+- **Voice** over the IVAO TeamSpeak servers, connected with your network session.
+
+## What was built
+
+g-atm was first brought to parity with the booklet *4-Flight pour les nuls*, version
+2.1, chapter by chapter: each section of the booklet was compared with the application,
+fixed, and checked on a traffic simulator. Version **2.0.0** then follows the newer
+booklet, *Livret 4-Flight version 4F3.0*: new alerts (APW), new menu entries, local
+settings, and the many small changes between the two editions.
 
 ## What it is not
 
-- **Not a pilot client.** It only connects as an ATC position.
-- **Not a tower or ground position.** Nothing prevents you from connecting as one, but the
-  screen, the labels and the tools are built for radar control.
-- **Not the real 4-Flight.** It is a reconstruction based on the public *4F pour les nuls*
-  documentation, adapted to what the IVAO protocol actually carries. Some real-world
-  functions have no equivalent on IVAO and are therefore absent or inert.
-- **Not a substitute for your division's rules.** Local procedures, LOAs and phraseology
-  remain yours to follow.
+- **Not a pilot client.** It connects as an ATC position only.
+- **Not a tower or ground client.** The screen and tools are built for radar control.
+- **Not the real 4-Flight.** It runs on what the IVAO network carries. There is no
+  CoFlight flight data processing, no OLDI link between centres, and no Mode S downlink
+  on IVAO. A simple POINT reaches other IVAO clients; the other coordination tools (NEGO,
+  FL?, iCoor…) and the data a suite shares work between g-atm positions only.
+- **Not complete.** Some booklet chapters were left out on purpose (degraded modes, the
+  backup screen, defence tools) and a few functions have nothing behind them on IVAO.
+  The list, with the reasons, is in [What g-atm does not
+  do](/5g-atm-doc/reference/not-implemented/).
+- **Not a substitute for your division's rules.** Procedures, letters of agreement and
+  phraseology are still yours to follow.
 
-## Inactive functions
+## Platforms
 
-Several menu entries exist because they exist in 4-Flight, but are **greyed out**: they
-are placeholders and clicking them does nothing.
+g-atm is a desktop application. Each release provides installers for **Windows**
+(x86-64), **macOS** (Apple Silicon and Intel) and **Linux** (x86-64). It is developed and
+tested on Windows. See [Install and update](/5g-atm-doc/start/install/).
 
-| Location | Greyed entries |
-|---|---|
-| Menu bar → Tools | Create SFPL…, OPSUP, Notepad |
-| Tools → Flight Lists | Holding Lists, Lost List, FL Negotiations, NotSeen/Rev, Sector Uncorrelated APL |
-| Radar menu | Views (2nd radar windows), Maps → Define/Recall, Tools → Mark/Find LAT-LONG |
-| Track menu | Create APL…, Tracking Radar Window, Correlation, Label Fields |
-| Menu bar | Status, ARTAS |
-
-If an entry is greyed, it is not broken — it is simply not implemented.
-
-## Platform
-
-Windows desktop application. It is distributed as a normal installer and runs as a native
-window, not in a browser.
+:::note
+Opening an IVAO session is limited to the VIDs on g-atm's access list. If your VID is
+not on it, the connection is refused: ask the maintainer of g-atm.
+:::
